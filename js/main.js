@@ -1,158 +1,198 @@
-;(function () {
-	
-	'use strict';
+(function($) {
+  "use strict";
+  $(window).on("load", function() { // makes sure the whole site is loaded
+    //preloader
+    $("#status").fadeOut(); // will first fade out the loading animation
+    $("#preloader").delay(450).fadeOut("slow"); // will fade out the white DIV that covers the website.
+    
+    //masonry
+    $('.grid').masonry({
+      itemSelector: '.grid-item'
+      
+    });    
+  });
 
 
+  $(document).ready(function(){  
 
-	var isMobile = {
-		Android: function() {
-			return navigator.userAgent.match(/Android/i);
-		},
-			BlackBerry: function() {
-			return navigator.userAgent.match(/BlackBerry/i);
-		},
-			iOS: function() {
-			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-		},
-			Opera: function() {
-			return navigator.userAgent.match(/Opera Mini/i);
-		},
-			Windows: function() {
-			return navigator.userAgent.match(/IEMobile/i);
-		},
-			any: function() {
-			return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-		}
-	};
+    //active menu
+    $(document).on("scroll", onScroll);
+ 
+    $('a[href^="#"]').on('click', function (e) {
+      e.preventDefault();
+      $(document).off("scroll");
+ 
+      $('a').each(function () {
+        $(this).removeClass('active');
+      })
+      $(this).addClass('active');
+ 
+      var target = this.hash;
+      $target = $(target);
+      $('html, body').stop().animate({
+        'scrollTop': $target.offset().top+2
+      }, 500, 'swing', function () {
+        window.location.hash = target;
+        $(document).on("scroll", onScroll);
+      });
+    });
 
-	var fullHeight = function() {
+    
+    //scroll js
+    smoothScroll.init({
+      selector: '[data-scroll]', // Selector for links (must be a valid CSS selector)
+      selectorHeader: '[data-scroll-header]', // Selector for fixed headers (must be a valid CSS selector)
+      speed: 500, // Integer. How fast to complete the scroll in milliseconds
+      easing: 'easeInOutCubic', // Easing pattern to use
+      updateURL: true, // Boolean. Whether or not to update the URL with the anchor hash on scroll
+      offset: 0, // Integer. How far to offset the scrolling anchor location in pixels
+      callback: function ( toggle, anchor ) {} // Function to run after scrolling
+    });
 
-		if ( !isMobile.any() ) {
-			$('.js-fullheight').css('height', $(window).height());
-			$(window).resize(function(){
-				$('.js-fullheight').css('height', $(window).height());
-			});
-		}
+    //menu
+    var bodyEl = document.body,
+    content = document.querySelector( '.content-wrap' ),
+    openbtn = document.getElementById( 'open-button' ),
+    closebtn = document.getElementById( 'close-button' ),
+    isOpen = false;
 
-	};
+    function inits() {
+      initEvents();
+    }
 
-	// Animations
+    function initEvents() {
+      openbtn.addEventListener( 'click', toggleMenu );
+      if( closebtn ) {
+        closebtn.addEventListener( 'click', toggleMenu );
+      }
 
-	var contentWayPoint = function() {
-		var i = 0;
-		$('.animate-box').waypoint( function( direction ) {
+      // close the menu element if the target it´s not the menu element or one of its descendants..
+      content.addEventListener( 'click', function(ev) {
+        var target = ev.target;
+        if( isOpen && target !== openbtn ) {
+          toggleMenu();
+        }
+      } );
+    }
 
-			if( direction === 'down' && !$(this.element).hasClass('animated') ) {
-				
-				i++;
+    function toggleMenu() {
+      if( isOpen ) {
+        classie.remove( bodyEl, 'show-menu' );
+      }
+      else {
+        classie.add( bodyEl, 'show-menu' );
+      }
+      isOpen = !isOpen;
+    }
 
-				$(this.element).addClass('item-animate');
-				setTimeout(function(){
-
-					$('body .animate-box.item-animate').each(function(k){
-						var el = $(this);
-						setTimeout( function () {
-							var effect = el.data('animate-effect');
-							if ( effect === 'fadeIn') {
-								el.addClass('fadeIn animated');
-							} else if ( effect === 'fadeInLeft') {
-								el.addClass('fadeInLeft animated');
-							} else if ( effect === 'fadeInRight') {
-								el.addClass('fadeInRight animated');
-							} else {
-								el.addClass('fadeInUp animated');
-							}
-
-							el.removeClass('item-animate');
-						},  k * 200, 'easeInOutExpo' );
-					});
-					
-				}, 100);
-				
-			}
-
-		} , { offset: '85%' } );
-	};
-
-
-	var burgerMenu = function() {
-
-		$('.js-fh5co-nav-toggle').on('click', function(event){
-			event.preventDefault();
-			var $this = $(this);
-
-			if ($('body').hasClass('offcanvas')) {
-				$this.removeClass('active');
-				$('body').removeClass('offcanvas');	
-			} else {
-				$this.addClass('active');
-				$('body').addClass('offcanvas');	
-			}
-		});
+    inits();
 
 
+    //typed js
+    $(".typed").typed({
+        strings: ["My Name is M.Reza", "I'm a Web Designer", "Love Simplicity"],
+        typeSpeed: 100,
+        backDelay: 900,
+        // loop
+        loop: true
+    });
 
-	};
+    //owl carousel
+    $('.owl-carousel').owlCarousel({
+      autoPlay: 3000, //Set AutoPlay to 3 seconds
+ 
+      items : 1,
+      itemsDesktop : [1199,1],
+      itemsDesktopSmall : [979,1],
+      itemsTablet : [768,1],
+      itemsMobile : [479,1],
 
-	// Click outside of offcanvass
-	var mobileMenuOutsideClick = function() {
+      // CSS Styles
+      baseClass : "owl-carousel",
+      theme : "owl-theme"
+    });
 
-		$(document).click(function (e) {
-	    var container = $("#fh5co-aside, .js-fh5co-nav-toggle");
-	    if (!container.is(e.target) && container.has(e.target).length === 0) {
+    $('.owl-carousel2').owlCarousel({
+      autoPlay: 3000, //Set AutoPlay to 3 seconds
+ 
+      items : 1,
+      itemsDesktop : [1199,1],
+      itemsDesktopSmall : [979,1],
+      itemsTablet : [768,1],
+      itemsMobile : [479,1],
+      autoPlay : false,
 
-	    	if ( $('body').hasClass('offcanvas') ) {
+      // CSS Styles
+      baseClass : "owl-carousel",
+      theme : "owl-theme"
+    });
 
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-			
-	    	}
-	    	
-	    }
-		});
+    //contact
+    $('input').blur(function() {
 
-		$(window).scroll(function(){
-			if ( $('body').hasClass('offcanvas') ) {
+      // check if the input has any value (if we've typed into it)
+      if ($(this).val())
+        $(this).addClass('used');
+      else
+        $(this).removeClass('used');
+    });
 
-    			$('body').removeClass('offcanvas');
-    			$('.js-fh5co-nav-toggle').removeClass('active');
-			
-	    	}
-		});
+    //pop up porfolio
+    $('.portfolio-image li a').magnificPopup({
+      type: 'image',
+      gallery: {
+        enabled: true
+      }
+      // other options
+    });
+    
+    //Skill
+    jQuery('.skillbar').each(function() {
+      jQuery(this).appear(function() {
+        jQuery(this).find('.count-bar').animate({
+          width:jQuery(this).attr('data-percent')
+        },3000);
+        var percent = jQuery(this).attr('data-percent');
+        jQuery(this).find('.count').html('<span>' + percent + '</span>');
+      });
+    }); 
 
-	};
+  
+  });
+  
+    
+  //header
+  function inits() {
+    window.addEventListener('scroll', function(e){
+        var distanceY = window.pageYOffset || document.documentElement.scrollTop,
+            shrinkOn = 300,
+            header = document.querySelector(".for-sticky");
+        if (distanceY > shrinkOn) {
+            classie.add(header,"opacity-nav");
+        } else {
+            if (classie.has(header,"opacity-nav")) {
+                classie.remove(header,"opacity-nav");
+            }
+          }
+      });
+    }
 
-	var sliderMain = function() {
-		
-	  	$('#fh5co-hero .flexslider').flexslider({
-			animation: "fade",
-			slideshowSpeed: 5000,
-			directionNav: true,
-			start: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			},
-			before: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			}
+  window.onload = inits();
 
-	  	});
+  //nav-active
+  function onScroll(event){
+    var scrollPosition = $(document).scrollTop();
+    $('.menu-list a').each(function () {
+      var currentLink = $(this);
+      var refElement = $(currentLink.attr("href"));
+      if (refElement.position().top <= scrollPosition && refElement.position().top + refElement.height() > scrollPosition) {
+        $('.menu-list a').removeClass("active");
+        currentLink.addClass("active");
+      }
+      else{
+        currentLink.removeClass("active");
+      }
+    });
+  }
 
-	};
-
-	// Document on load.
-	$(function(){
-		fullHeight();
-		contentWayPoint();
-		burgerMenu();
-		mobileMenuOutsideClick();
-		sliderMain();
-	});
-
-
-}());
+})(jQuery);
